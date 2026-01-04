@@ -75,4 +75,44 @@ public class ProdutosDAO {
         return listagem;
     }
     
+    // --- NOVOS MÉTODOS ADICIONADOS PARA A ATIVIDADE 3 ---
+    
+    public void venderProduto(int id) {
+        conn = new conectaDAO().connectDB();
+        String sql = "UPDATE produtos SET status = 'Vendido' WHERE id = ?";
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            prep.setInt(1, id);
+            prep.execute();
+            
+        } catch (SQLException ex) {
+            System.out.println("Erro ao atualizar status: " + ex.getMessage());
+        }
+    }
+    
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        String sql = "SELECT * FROM produtos WHERE status = 'Vendido'";
+        
+        conn = new conectaDAO().connectDB();
+        ArrayList<ProdutosDTO> listaVendidos = new ArrayList<>();
+        
+        try {
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            
+            while (resultset.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                p.setId(resultset.getInt("id"));
+                p.setNome(resultset.getString("nome"));
+                p.setValor(resultset.getInt("valor"));
+                p.setStatus(resultset.getString("status"));
+                listaVendidos.add(p);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao listar vendidos: " + ex.getMessage());
+        }
+        return listaVendidos;
+    }
+    
 }
