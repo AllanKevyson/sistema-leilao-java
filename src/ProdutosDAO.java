@@ -40,7 +40,7 @@ public class ProdutosDAO {
             // 4. Executar o comando no banco
             prep.execute();
             
-            // 5. Exibir mensagem de sucesso (Exigência da atividade)
+            // 5. Exibir mensagem de sucesso
             JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
             
         } catch (SQLException ex) {
@@ -50,7 +50,28 @@ public class ProdutosDAO {
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
+        String sql = "SELECT * FROM produtos";
         
+        try {
+            conn = new conectaDAO().connectDB();
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
+            
+            // Limpa a lista para não duplicar dados se clicar duas vezes
+            listagem.clear(); 
+            
+            while (resultset.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+                p.setId(resultset.getInt("id"));
+                p.setNome(resultset.getString("nome"));
+                p.setValor(resultset.getInt("valor"));
+                p.setStatus(resultset.getString("status"));
+                
+                listagem.add(p);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao listar: " + ex.getMessage());
+        }
         return listagem;
     }
     
